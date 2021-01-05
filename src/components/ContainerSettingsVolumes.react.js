@@ -3,10 +3,17 @@ import React from 'react/addons';
 import electron from 'electron';
 const remote = electron.remote;
 const dialog = remote.dialog;
-import {shell} from 'electron';
+import { shell } from 'electron';
 import util from '../utils/Util';
 import metrics from '../utils/MetricsUtil';
 import containerActions from '../actions/ContainerActions';
+
+function showOpenDialog(...args){
+  return new Promise((resolve, reject) => {
+    let result = dialog.showOpenDialog(...args)
+    resolve(result)
+  })
+}
 
 var ContainerSettingsVolumes = React.createClass({
   getInitialState: function () {
@@ -32,7 +39,7 @@ var ContainerSettingsVolumes = React.createClass({
     }
   },
   handleChooseVolumeClick: function (dockerVol) {
-    dialog.showOpenDialog({properties: ['openDirectory', 'createDirectory']}).then(({filePaths}) => {
+    showOpenDialog({properties: ['openFile', 'openDirectory', 'createDirectory']}).then((filePaths) => {
       if (!filePaths) {
         return;
       }
@@ -189,8 +196,8 @@ var ContainerSettingsVolumes = React.createClass({
           <table className="table volumes">
             <thead>
               <tr>
-                <th>DOCKER FOLDER</th>
-                <th>LOCAL FOLDER</th>
+                <th>DOCKER FOLDER/FILE</th>
+                <th>LOCAL FOLDER/FILE</th>
                 <th></th>
               </tr>
             </thead>
